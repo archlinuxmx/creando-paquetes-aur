@@ -1,0 +1,134 @@
+# Arch Linux México
+
+<!-- block-start: grid -->
+<!-- block-start: column -->
+
+![Mascota de Arch Linux México](./assets/teporingo.png)
+
+<!-- block-end -->
+<!-- block-start: column, left -->
+
+## Creando paquetes para Arch Linux (AUR)
+
+- [Andrea Denisse Gómez-Martínez](https://twitter.com/da_edra)
+
+- [Jesús Castro](https://twitter.com/gccstr)
+
+- [Santiago Torres-Arias](https://twitter.com/torresariass)
+
+<!-- block-end -->
+<!-- block-end -->
+
+---
+
+## Toc
+
+Hello
+
+---
+
+# ¿Qué es el AUR?
+
+El `AUR` es una plataforma impulsada por y para la comunidad de Arch Linux.
+
+El `AUR` aloja scripts de empaquetamiento (`PKGBUILD`) que permiten compilar
+un paquete usando `makepkg` y luego instalarlo con `pacman`.
+
+---
+
+## ¿Para qué usar PKGBUILDs del AUR?
+
+Usuarios y usuarios de confianza (Trusted Users) se encargan de que los
+paquetes que llegan al AUR funcionen
+
+---
+
+## ¿Por qué hacer mis propios paquetes del AUR?
+
+Hacer tus propios scripts te ayuda a simplificar la administración de tu sistema
+pues hace más sencillo el instalar, actualizar y desinstalar software.
+
+---
+
+## ¿Por qué subir al AUR mis PKGBUILDs?
+
+Al subir tus scripts de empaquetamiento al AUR permites lo siguiente:
+
+- Beneficias a otras personas que también usan Arch Linux y que usan el software
+que estás empaquetando.
+
+- Puedes recibir ayuda de la comunidad en tus scripts de empaquetamiento
+mejorando los scripts del software que actualmente usas.
+
+- Permites que otras personas aprendan a empaquetar software al leer tus
+scripts.
+
+---
+
+<!-- block-start: grid -->
+<!-- block-start: column -->
+
+![Mascota de Arch Linux México](./assets/teporingo.png)
+
+<!-- block-end -->
+<!-- block-start: column, left -->
+
+> La colaboración comunitaria es uno de los pilares del software libre.
+> -
+> `- Archoringa la teporinga.`
+
+<!-- block-end -->
+<!-- block-end -->
+
+---
+
+# Ejemplo de un PKGBUILD:
+
+```shell
+# Maintainer: Andrea Denisse Gómez-Martínez <aur at denisse dot dev>
+
+pkgname=gitrob
+pkgdesc='Reconnaissance tool for GitLab and GitHub organizations'
+arch=(x86_64 i686 armv7h)
+url='https://github.com/codeEmitter/gitrob'
+_branch='master'
+pkgver=3.4.1_beta
+pkgrel=1
+license=('MIT')
+makedepends=(go)
+source=("${pkgname}-${pkgver//_/-}.tar.gz::${url}/archive/v${pkgver//_/-}.tar.gz")
+sha256sums=('b70e44eabc4e3ded8f44bebbd65e98d23631b3be2e7f2ae08045a01ca3cddabb')
+sha512sums=('8f837a6d799ebc18f7574b06a41a65da5b2cb2d678af17b11fc9e3404d1a9ad696902d84bc71056c47b8a68fea38e3b7bec0a53cef5635a1630086e337c55194')
+b2sums=('542cc9cd6789009fe0cb8a1d222683c5feda7f777be707fccd66e370983fd0a8afb396866684a46c2961eefe5ed8fa9e7b906f945bc6b2829459cab69b663b19')
+provides=($pkgname)
+conflicts=($pkgname)
+
+build() {
+  cd "${pkgname}-${pkgver//_/-}"
+
+  export CGO_LDFLAGS="${LDFLAGS}"
+  export CGO_CFLAGS="${CFLAGS}"
+  export CGO_CPPFLAGS="${CPPFLAGS}"
+  export CGO_CXXFLAGS="${CXXFLAGS}"
+  export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
+
+  go build .
+}
+
+check() {
+  cd "${pkgname}-${pkgver//_/-}"
+  go test ./...
+}
+
+package() {
+  cd "${pkgname}-${pkgver//_/-}"
+  install -Dm755 "$pkgname" "$pkgdir"/usr/bin/$pkgname
+  install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+```
+
+---
+
+# El `AUR` y el repositorio `community`
+
+---
